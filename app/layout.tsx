@@ -4,12 +4,14 @@ import { Inter } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/toaster";
 import { Navbar } from "@/components/layout/navbar";
+import { Page } from "@/components/layout/page";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Next.js Application",
-  description: "A modern Next.js application with Supabase and TanStack Query",
+  title: "Supanext",
+  description:
+    "A modern application built with Next.js, Supabase, TanStack Query and shadcn",
 };
 
 export default function RootLayout({
@@ -20,11 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <Providers>
-          <Navbar />
-          {children}
-          <Toaster />
-        </Providers>
+        <Page>{children}</Page>
       </body>
     </html>
   );
