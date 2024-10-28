@@ -1,21 +1,17 @@
 "use client";
 
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth";
 import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+
 import { Sidebar } from "@/components/layout/sidebar";
+import { LoadingSpinner } from "@/components/layout/loading";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const { user } = useAuth();
 
   if (!user) {
     redirect("/auth/signin");

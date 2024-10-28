@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Providers } from "@/components/providers";
+import { Providers } from "@/providers";
 import { Toaster } from "@/components/ui/toaster";
 import { Navbar } from "@/components/layout/navbar";
 import { Page } from "@/components/layout/page";
@@ -23,6 +23,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Page>{children}</Page>
+        <Toaster />
       </body>
     </html>
   );

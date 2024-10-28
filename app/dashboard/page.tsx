@@ -5,30 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth";
 import { Loader2, Trash } from "lucide-react";
 import { usePosts, useCreatePost, useDeletePost } from "@/hooks/use-posts";
-import Link from "next/link";
+import { LoadingSpinner } from "@/components/layout/loading";
 
-/**
- * The dashboard page.
- *
- * This page shows a form for creating a new post and a list of the user's
- * existing posts. The list is empty if the user has not created any posts yet.
- *
- * The form is submitted when the user clicks on the "Create Post" button.
- * The `handlePostSubmit` function is called with the form data. If the
- * submission is successful, the form is reset and the user is redirected to
- * the home page.
- *
- * The list of posts is rendered as a grid of cards. Each card shows the post
- * title, content, and creation date. The user can delete a post by clicking
- * on the trash can icon in the card header.
- *
- * If the user is not authenticated, the page redirects to the login page.
- *
- * @returns The dashboard page component.
- */
 export default function Dashboard() {
   const { user } = useAuth();
   const [postTitle, setPostTitle] = useState("");
@@ -87,9 +68,7 @@ export default function Dashboard() {
       <div className="space-y-4">
         <h2 className="text-2xl font-bold">Your Posts</h2>
         {isLoading ? (
-          <div className="flex justify-center">
-            <Loader2 className="h-8 w-8 animate-spin" />
-          </div>
+          <LoadingSpinner />
         ) : userPosts?.length === 0 ? (
           <p className="text-center text-muted-foreground">
             You haven't created any posts yet.
