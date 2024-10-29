@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/providers/auth";
 import { useState } from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
 import { LoadingSpinner } from "@/components/layout/loading";
 
 export default function SignIn() {

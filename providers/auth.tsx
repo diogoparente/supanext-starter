@@ -8,7 +8,7 @@ import {
   useCallback,
 } from "react";
 import { useRouter } from "next/navigation";
-import { Session } from "@supabase/supabase-js";
+import { Session, Subscription } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 
@@ -29,9 +29,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
 
   const [user, setUser] = useState<Session["user"] | null>(null);
-
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -40,15 +40,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   } = useToast();
 
   useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-    });
+    const handleAuthStateChange = async () => {
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange(async (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setSubscription(subscription);
+
+        if (event === "SIGNED_IN") {
+          const user = session?.user;
+          // Check if user exist in Database
+          const { data, error } = await supabase
+            .from("users")
+            .select()
+            .eq("email", user?.email);
+
+          if (error) {
+            console.error("Error fetching user profile:", error);
+          } else if (data.length === 0) {
+            const { data: insertData, error: insertError } = await supabase
+              .from("users")
+              .insert({
+                email: user?.email,
+                name: user?.user_metadata.full_name,
+                img_url: user?.user_metadata.avatar_url,
+              });
+            if (insertError) {
+              console.error(
+                "Error inserting/updating user profile:",
+                insertError
+              );
+            } else {
+              console.log("User profile inserted/updated:", insertData);
+            }
+          }
+        }
+      });
+    };
+
+    handleAuthStateChange();
 
     return () => {
-      subscription.unsubscribe();
+      subscription?.unsubscribe();
     };
   }, []);
 

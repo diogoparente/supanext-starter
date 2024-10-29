@@ -4,7 +4,6 @@ import { useAuth } from "@/providers/auth";
 import { redirect } from "next/navigation";
 
 import { Sidebar } from "@/components/layout/sidebar";
-import { LoadingSpinner } from "@/components/layout/loading";
 
 export default function DashboardLayout({
   children,
